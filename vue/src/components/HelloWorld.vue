@@ -1,6 +1,6 @@
 <template>
   <div>
-    hello
+    <div class="head"><h1>Todo List</h1></div>
     <div class="new-tasks">
       <v-form>
         <v-container>
@@ -19,6 +19,7 @@
                 depressed
                 color="primary"
                 @click.prevent="addTask"
+                :disabled="!tasktext"
               >
                 create
               </v-btn>
@@ -26,29 +27,40 @@
           </v-row>
         </v-container>
       </v-form>
-    
-    <div class="delete-All">
-      <v-btn block class="butn">delete All tasks</v-btn>
-    </div>
-<div class="task-list">
-      
-      <v-form v-for="(task, index) in tasks" :key="index">
-        <h1>{{task}}</h1>
-        <v-container>
-          <v-row>
-            <v-col cols="12" class="input">
-              <v-text-field v-model="task.tasktext" >
-              
-              </v-text-field>
-             
 
-              <v-btn class="btn" depressed color="primary"> update </v-btn>
-              <v-btn class="btn" depressed color="primary"> delete </v-btn>
-            </v-col>
-          </v-row>
-        </v-container>
-     </v-form>
-</div>
+      <div class="delete-All">
+        <v-btn block class="butn" v-if="tasks.length > 1" @click="deleteAll"
+          >delete All tasks</v-btn
+        >
+      </div>
+      <div class="task-list">
+        <v-form v-for="(task, index) in tasks" :key="index">
+          <v-container>
+            <v-row>
+              <v-col cols="11" class="input">
+                <v-text-field
+                  v-model="task.Text"
+                  readonly
+                  @click="task.done = !task.done"
+                  :style="{
+                    'text-decoration': task.done ? 'line-through' : '',
+                  }"
+                >
+                </v-text-field>
+
+                <v-btn
+                  class="btn"
+                  depressed
+                  color="primary"
+                  @click="deleteTask(index)"
+                >
+                  delete
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-form>
+      </div>
     </div>
   </div>
 </template>
@@ -57,12 +69,19 @@
 export default {
   data: () => ({
     tasks: [],
-    tasktext:'',
+    tasktext: "",
+    done: true,
   }),
   methods: {
     addTask: function () {
-      this.tasks.push({ Text:this.tasktext, done: false });
+      this.tasks.push({ Text: this.tasktext, done: false });
       this.tasktext = "";
+    },
+    deleteTask: function (index) {
+      this.tasks.splice(index, 1);
+    },
+    deleteAll: function () {
+      this.tasks = [];
     },
   },
 };
@@ -78,5 +97,12 @@ export default {
 }
 .delete-All {
   margin: 20px 320px;
+}
+.head {
+  text-align: center;
+  margin-top: 50px;
+  margin-bottom: 30px;
+  font-size: 1.5rem;
+  color: aqua;
 }
 </style>
