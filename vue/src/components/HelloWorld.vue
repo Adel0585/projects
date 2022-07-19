@@ -58,7 +58,7 @@
                   class="btn"
                   depressed
                   color="primary"
-                  @click="deleteTask(index)"
+                  @click="deleteTask()"
                 >
                   delete
                 </v-btn>
@@ -66,50 +66,53 @@
             </v-row>
           </v-container>
         </v-form>
+        <!-- --------------------------    -  ----------------------------- -->
+
         <div class="all-rections">
           <div class="My-icons">
             <div class="reaction">
-              <v-icon color="blue darken-2" @click="likeReaction">
+              <v-icon color="blue darken-2" @click="likeReaction(task)">
                 mdi-thumb-up
               </v-icon>
             </div>
             <div class="reaction">
-              <v-icon color="red darken-2" @click="dislikeReaction">
+              <v-icon color="red darken-2" @click="dislikeReaction(task)">
                 mdi-thumb-down
               </v-icon>
             </div>
             <div class="reaction">
-              <v-icon color="blue darken-0.5" @click="addComment"
+              <v-icon color="blue darken-0.5" @click="addComment(task)"
                 >mdi-message-text</v-icon
               >
             </div>
           </div>
           <div class="like-dislike">
             <div>
-              <p>Like {{ like }}</p>
+              <p>Like {{ task.likeCounter }}</p>
             </div>
             <div>
-              <p>Dislike {{ dislike }}</p>
+              <p>Dislike {{ task.dislikeCounter }}</p>
             </div>
           </div>
         </div>
         <!-- ----------------   -->
-        <div class="comments" v-for="(comment, index) in comments" :key="index">
+        <div class="comments" v-for="(comment, i) in task.comments" :key="i">
           <div class="comments-field">
             <v-container>
               <v-row>
                 <v-col cols="12" md="12">
-                  <v-textarea solo label="Comment..."></v-textarea>
+                  <v-textarea
+                    v-model="comment.comme"
+                    solo
+                    label="Comment..."
+                  ></v-textarea>
                 </v-col>
               </v-row>
             </v-container>
           </div>
           <!-- ----------------   -->
           <div class="del-comm">
-            <v-icon
-              color="red darken-2"
-              @click="deleteComment(index)"
-            >
+            <v-icon color="red darken-2" @click="deleteComment(task, i)">
               mdi-trash-can
             </v-icon>
           </div>
@@ -124,15 +127,16 @@ export default {
   data: () => ({
     tasks: [],
     tasktext: "",
-    done: true,
-    like: 0,
-    dislike: 0,
-    comments: [],
-    comm: {},
   }),
   methods: {
     addTask: function () {
-      this.tasks.push({ Text: this.tasktext, done: false });
+      this.tasks.push({
+        Text: this.tasktext,
+        done: false,
+        likeCounter: 0,
+        dislikeCounter: 0,
+        comments: [],
+      });
       this.tasktext = "";
     },
     deleteTask: function (index) {
@@ -141,17 +145,22 @@ export default {
     deleteAll: function () {
       this.tasks = [];
     },
-    likeReaction: function () {
-      this.like += 1;
+
+    // ----------------------
+    likeReaction: function (task) {
+      task.likeCounter++;
     },
-    dislikeReaction: function () {
-      this.dislike += 1;
+    // ------------------
+    dislikeReaction: function (task) {
+      task.dislikeCounter++;
     },
-    addComment: function () {
-      this.comments.push({ comm: {}});
+    addComment: function (task) {
+      task.comments.push({ comme: "" });
+      console.log(task.comment);
+      // console.log('yes');
     },
-    deleteComment: function (index) {
-      this.comments.splice(index, 1);      
+    deleteComment: function (task, i) {
+      task.comments.splice(i, 1);
     },
   },
 };
